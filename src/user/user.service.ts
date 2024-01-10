@@ -1,15 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
+import { LoginResponse } from './interface/interface';
+import { LoginUserDto } from './dto/login-user.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-  ) {}
+    private jwtService: JwtService // הוספת JwtService כתלות
+
+  ) { }
   createUser(createUserDto: CreateUserDto): Promise<User> {
     const user: User = new User();
     user.name = createUserDto.name;
@@ -41,4 +46,26 @@ export class UserService {
   removeUser(id: number): Promise<{ affected?: number }> {
     return this.userRepository.delete(id);
   }
+
+  async login(loginUserDto: LoginUserDto): Promise<LoginResponse> {
+    const { id, email, password } = loginUserDto;
+    const user = await this.userRepository.findOneBy({ id });
+  
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+  
+    if (user.password !== password) {
+      throw new UnauthorizedException('Invalid password');
+    }
+  
+    const payload = { email: user.email, sub: user.id };
+    const access_token = await this.jwtService.signAsync(payload);
+    
+    return {
+      access_token,
+      user,
+    };
+  }
+  
 }

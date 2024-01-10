@@ -1,15 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, Header, Headers, HttpCode, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { RedisService } from './redis/redis.service';
+import { LoginUserDto } from './dto/login-user.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
+
 
 @Controller('user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly redisService: RedisService
-  ) {}
+  ) { }
 
   @Post()
   async create(@Body(new ValidationPipe()) createUserDto: CreateUserDto) {
@@ -17,9 +20,22 @@ export class UserController {
     await this.redisService.client.set('user : ' + createdUser.id.toString(), JSON.stringify(createdUser));
     return createdUser;
   }
+  @Post('/login')
+async loginUser(@Body(new ValidationPipe()) loginUserDto: LoginUserDto) {
+  const loggedInUser = await this.userService.login(loginUserDto);
+  return loggedInUser;
+}
+
 
   @Get()
-  async findAll() {
+  @HttpCode(200)
+  @Header('token', 'validTokenValue') // שים לב לערכים המתאימים לך
+  async findAll(@Headers() headers: Headers) {
+    // const token = headers['authorization'];
+    // if (!headers) {
+    //   throw new UnauthorizedException('Missing authorization header, please provide a valid token');
+    // }
+
     const cachedUsers = await this.redisService.client.keys('*');
 
     if (cachedUsers.length > 0) {
@@ -52,8 +68,8 @@ export class UserController {
       return userFromDatabase;
     }
   }
-
   @Patch(':id')
+  @UseGuards(AuthGuard)
   async update(@Param('id') id: string, @Body(new ValidationPipe()) updateUserDto: UpdateUserDto) {
     const updatedUser = await this.userService.updateUser(+id, updateUserDto);
     await this.redisService.client.set('user : ' + updatedUser.id.toString(), JSON.stringify(updatedUser));
