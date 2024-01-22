@@ -1,52 +1,73 @@
-
-
-
-import {
-    IsAlphanumeric,
-    IsEmail,
-    IsEnum,
-    IsInt,
-    IsNotEmpty,
-    IsString,
-    Matches,
-    MinLength,
-} from 'class-validator';
-
-const passwordRegEx =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,20}$/;
+// update-user.dto.ts
+import { IsString, IsEmail, IsOptional, IsBoolean, IsInt } from 'class-validator';
+import { GardenRestApi } from 'src/garden-rest-api/entities/garden-rest-api.entity';
+import { OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 export class CreateUserDto {
-    @IsString()
-    @MinLength(2, { message: 'Name must have atleast 2 characters.' })
-    @IsNotEmpty()
-    name: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @IsNotEmpty()
-    @MinLength(3, { message: 'Username must have atleast 3 characters.' })
-    @IsAlphanumeric( {
-        message: 'Username does not allow other than alpha numeric chars.',
-    })
-    username: string;
 
-    @IsNotEmpty()
-    @IsEmail( { message: 'Please provide valid Email.' })
-    email: string;
+  @IsString()
+  @IsOptional()
+  name?: string;
 
-    @IsInt()
-    age: number;
+  @IsBoolean()
+  @IsOptional()
+  isAdmin?: boolean;
 
-    @IsString()
-    @IsEnum(['f', 'm', 'u'])
-    gender: string;
+  @IsEmail({}, { message: 'Please provide a valid email address.' })
+  @IsOptional()
+  email?: string;
 
-    @IsNotEmpty()
-    // @Matches(passwordRegEx, {
-    //     message: `Password must contain Minimum 8 and maximum 20 characters, 
-    //   at least one uppercase letter, 
-    //   one lowercase letter, 
-    //   one number and 
-    //   one special character`,
-    // })
-    password: string;
+  @IsString()
+  @IsOptional()
+  password?: string;
+
+  @IsString()
+  @IsOptional()
+  userType?: string;
+
+  @IsString()
+  @IsOptional()
+  address?: string;
+
+  @IsString()
+  @IsOptional()
+  city?: string;
+
+  @IsString()
+  @IsOptional()
+  paymentMethod?: string;
+
+  @IsString()
+  @IsOptional()
+  creditCardNumber?: string;
+
+  @IsString()
+  @IsOptional()
+  expirationDate?: string;
+
+  @IsString()
+  @IsOptional()
+  cvv?: string;
+
+  @IsString()
+  @IsOptional()
+  bankAccountNumber?: string;
+
+  @IsString()
+  @IsOptional()
+  bankName?: string;
+
+  @IsString()
+  @IsOptional()
+  accountHolderName?: string;
+
+  @IsString()
+  @IsOptional()
+  contactPhoneNumber?: string;
+  
+  @OneToOne(() => GardenRestApi, (garden) => garden.user)
+  garden: GardenRestApi;
 }
-

@@ -10,6 +10,10 @@ import {
     MinLength,
 } from 'class-validator';
 
+export const validationMessages = {
+    isEmail: 'Please provide a valid email address.',
+  };
+
 const passwordRegEx =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,20}$/;
 
@@ -20,7 +24,7 @@ export class LoginUserDto {
 
 
     @IsNotEmpty()
-    @IsEmail( { message: 'Please provide valid Email.' })
+    @IsEmail({}, { message: validationMessages.isEmail })
     email: string;
 
     @IsNotEmpty()

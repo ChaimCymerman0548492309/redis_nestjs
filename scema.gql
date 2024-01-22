@@ -1,0 +1,42 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type GardenType {
+  id: ID!
+  name: String!
+  parkSize: Int!
+  vegetation: String!
+  type: String!
+  description: String!
+  rating: Int!
+  gardenerName: String!
+  gardenerPhone: String!
+  treatment: Int!
+  coordinates: [Float!]!
+  street: String!
+  city: String!
+  gardenImages: [String!]!
+  gardenImagesAlt: String!
+}
+
+type Query {
+  gardens: [GardenType!]!
+  garden(id: Float!): GardenType!
+}
+
+type Mutation {
+  createGarden(createGardenInput: CreateGardenInput!): GardenType!
+  updateGarden(updateGardenInput: UpdateGardenInput!): GardenType!
+  removeGarden(id: Float!): GardenType!
+}
+
+input CreateGardenInput {
+  id: Float
+  name: String!
+}
+
+input UpdateGardenInput {
+  id: Float
+  name: String
+}

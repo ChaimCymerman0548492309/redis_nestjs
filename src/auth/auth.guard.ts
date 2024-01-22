@@ -14,11 +14,9 @@ import {
     constructor(private jwtService: JwtService) {}
   
     async canActivate(context: ExecutionContext): Promise<boolean> {
-      // console.log(context);
       
       const request = context.switchToHttp().getRequest();
-      // console.log(request.headers.token);
-      // console.log(request.auth.Bearer);
+      
       
       
       const token = this.extractTokenFromHeader(request);
@@ -36,9 +34,11 @@ import {
         );
         // 💡 We're assigning the payload to the request object here
         // so that we can access it in our route handlers
-        console.log(payload);
+        // console.log(payload);
         
-        request['user'] = payload;
+        request.uaer = payload;
+        console.log(request.uaer);
+        
       } catch {
         throw new UnauthorizedException();
       }

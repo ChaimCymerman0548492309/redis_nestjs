@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,35 +11,94 @@ import { LoginUserDto } from './dto/login-user.dto';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(User) public readonly userRepository: Repository<User>,
     private jwtService: JwtService // הוספת JwtService כתלות
-
   ) { }
-  createUser(createUserDto: CreateUserDto): Promise<User> {
-    const user: User = new User();
-    user.name = createUserDto.name;
-    user.age = createUserDto.age;
-    user.email = createUserDto.email;
-    user.username = createUserDto.username;
-    user.password = createUserDto.password;
-    user.gender = createUserDto.gender;
-    return this.userRepository.save(user);
-  }
+
   findAllUser(): Promise<User[]> {
     return this.userRepository.find();
   }
+
+  
   viewUser(id: number): Promise<User> {
     return this.userRepository.findOneBy({ id });
   }
 
-  updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    const user: User = new User();
-    user.name = updateUserDto.name;
-    user.age = updateUserDto.age;
-    user.email = updateUserDto.email;
-    user.username = updateUserDto.username;
-    user.password = updateUserDto.password;
-    user.id = id;
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
+    const user = this.userRepository.create(createUserDto);
+    return this.userRepository.save(user);
+  }
+ 
+  async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.userRepository.findOneBy({id});
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+  
+    const updatedFields: Partial<User> = {};
+  
+    if (updateUserDto.name !== undefined) {
+      updatedFields.name = updateUserDto.name;
+    }
+  
+    if (updateUserDto.isAdmin !== undefined) {
+      updatedFields.isAdmin = updateUserDto.isAdmin;
+    }
+  
+    if (updateUserDto.email !== undefined) {
+      updatedFields.email = updateUserDto.email;
+    }
+  
+    if (updateUserDto.password !== undefined) {
+      updatedFields.password = updateUserDto.password;
+    }
+  
+    if (updateUserDto.userType !== undefined) {
+      updatedFields.userType = updateUserDto.userType;
+    }
+  
+    if (updateUserDto.address !== undefined) {
+      updatedFields.address = updateUserDto.address;
+    }
+  
+    if (updateUserDto.city !== undefined) {
+      updatedFields.city = updateUserDto.city;
+    }
+  
+    if (updateUserDto.paymentMethod !== undefined) {
+      updatedFields.paymentMethod = updateUserDto.paymentMethod;
+    }
+  
+    if (updateUserDto.creditCardNumber !== undefined) {
+      updatedFields.creditCardNumber = updateUserDto.creditCardNumber;
+    }
+  
+    if (updateUserDto.expirationDate !== undefined) {
+      updatedFields.expirationDate = updateUserDto.expirationDate;
+    }
+  
+    if (updateUserDto.cvv !== undefined) {
+      updatedFields.cvv = updateUserDto.cvv;
+    }
+  
+    if (updateUserDto.bankAccountNumber !== undefined) {
+      updatedFields.bankAccountNumber = updateUserDto.bankAccountNumber;
+    }
+  
+    if (updateUserDto.bankName !== undefined) {
+      updatedFields.bankName = updateUserDto.bankName;
+    }
+  
+    if (updateUserDto.accountHolderName !== undefined) {
+      updatedFields.accountHolderName = updateUserDto.accountHolderName;
+    }
+  
+    if (updateUserDto.contactPhoneNumber !== undefined) {
+      updatedFields.contactPhoneNumber = updateUserDto.contactPhoneNumber;
+    }
+  
+    // Save the updated user to the database
     return this.userRepository.save(user);
   }
 
@@ -67,5 +126,6 @@ export class UserService {
       user,
     };
   }
+
   
 }

@@ -18,3 +18,4 @@ import { JwtModule } from '@nestjs/jwt';
   providers: [UserService ,RedisService],
 })
 export class UserModule {}
+

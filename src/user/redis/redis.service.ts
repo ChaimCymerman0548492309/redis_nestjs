@@ -1,23 +1,53 @@
-import { Module } from '@nestjs/common';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { Redis } from 'ioredis';
+import * as chalk from 'chalk';
 
-@Injectable()
-export class RedisService {
+@Injectable({ scope: Scope.DEFAULT })
+export  class RedisService {
   public client: Redis;
 
   constructor() {
     this.client = new Redis({
-      host: 'redis-12557.c274.us-east-1-3.ec2.cloud.redislabs.com',
-      port: 12557,
-      password: 'N4iUV3oiaYOVg86Brt0mX2vKSx7lj36b',
+      host: 'localhost',
+      port: 6379,
     });
-    this.client.connect().catch((error) => 
-    console.error('Redis connection error:', error));
+
+    if (!this.client || !this.client.connect) {
+      this.client = new Redis();
+     this.client.connect();
+    }  }
+
+  private connectToRedis(): void {
+    this.client
+      .connect()
+      .then(() => {
+        console.log(chalk.blue('Connected to Redis successfully!'));
+      })
+      .catch((error) => {
+        console.error(chalk.red('Redis connection error:'), error);
+      });
   }
 
+  // Set a key-value pair with a TTL
+  public async setWithTTL(key: string, value: string, ttlSeconds: number): Promise<void> {
+    await this.client.set(key, value);
+    await this.client.expire(key, ttlSeconds);
+  }
 }
-// password: 'N4iUV3oiaYOVg86Brt0mX2vKSx7lj36b',
-//     socket: {
-//         host: 'redis-12557.c274.us-east-1-3.ec2.cloud.redislabs.com',
-//         port: 12557
+
+// Example of using RedisService in another class
+import { Headers } from '@nestjs/common';
+
+@Injectable()
+export class YourService {
+  constructor(private readonly redisService: RedisService) {}
+
+  async yourFunction(userId: string, user: any): Promise<any> {
+    const ttlSeconds = 10; // Set your desired TTL value
+    const userKey = 'user:' + userId; // Assuming userId is the unique identifier for a user
+    const userValue = JSON.stringify(user); // Convert user object to string
+    await this.redisService.setWithTTL(userKey, userValue, ttlSeconds);
+
+    // Rest of your function logic
+  }
+}
