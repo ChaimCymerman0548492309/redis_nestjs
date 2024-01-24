@@ -24,15 +24,16 @@ import { GardenRestApi } from './garden-rest-api/entities/garden-rest-api.entity
     UserModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.POSTGRES_HOST,
-      port: 5433,
-      password: process.env.POSTGRES_PASSWORD || '8114',
-      username: process.env.POSTGRES_USER || 'postgres',
+      host: 'arjuna.db.elephantsql.com', // Your PostgreSQL server host
+      port: 5432, // Default PostgreSQL port is 5432
+      username: 'dfnoluyv',
+      password: 'ciOvHLAwzucP9hUFc8EY5OKTVJhSPoxH',
+      database: 'dfnoluyv', // Your default database
       entities: [User, GardenRestApi],
-      synchronize: true,
+      synchronize: true, // Set to true only in development, should be false in production
       logging: true,
     }),
-    MongooseModule.forRoot('mongodb+srv://ido:tgbyhn67@cluster0.11bdobw.mongodb.net/Project'),
+    MongooseModule.forRoot('mongodb+srv://a548492309:8114@cluster0.zdjwrf5.mongodb.net/GrowTracker'),
     GardenRestApiModule,
 
     // graphql + apollo playground configuration
@@ -46,8 +47,9 @@ import { GardenRestApi } from './garden-rest-api/entities/garden-rest-api.entity
     // GardensModule,
     
   ],
+  
   controllers: [AppController],
-  providers: [AppService, TweetsService ,],
+  providers: [AppService, TweetsService ,GardenRestApiModule],
 })
 
 

@@ -19,7 +19,7 @@ export class CreateGardenRestApiDto {
     name: string;
     phone: string;
     rating: number;
-    gardner_image: string; // Assuming gardner_image is a string
+    gardner_image: string;
   };
 
   @IsNumber()

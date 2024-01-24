@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
 import { GardenRestApiService } from './garden-rest-api.service';
 import { GardenRestApiController } from './garden-rest-api.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { GardenRestApi } from './entities/garden-rest-api.entity'; // Make sure to import your entity
+import { MongooseModule } from '@nestjs/mongoose';  // וודא שמיובא כמו שצריך
+import { GardenSchema } from './gardens.schema';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([GardenRestApi])], // Import and include your entity here
-
+  imports: [MongooseModule.forFeature([{ name: 'GardenRestApi', schema: GardenSchema }])],
   controllers: [GardenRestApiController],
-  providers: [GardenRestApiService], // Use GardenRestApiService as a provider
+  providers: [GardenRestApiService],
 })
 export class GardenRestApiModule {}

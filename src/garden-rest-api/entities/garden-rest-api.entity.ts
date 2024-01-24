@@ -1,5 +1,3 @@
-// garden.entity.ts
-
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 
@@ -15,68 +13,67 @@ export class GardenRestApi {
   description: string;
 
   @Column()
-  contact_person_name: string;
+  contactPersonName: string;
 
   @Column()
-  contact_person_phone_number: string;
+  contactPersonPhoneNumber: string;
 
   @Column()
-  gardner_name: string;
+  gardenerName: string;
 
   @Column()
-  gardner_phone: string;
+  gardenerPhone: string;
 
   @Column({ type: 'int' })
-  gardner_rating: number;
+  gardenerRating: number;
 
   @Column()
-  gardner_image: string;
+  gardenerImage: string;
 
   @Column({ type: 'int' })
-  park_size: number;
+  parkSize: number;
 
   @Column()
   vegetation: string;
 
   @Column()
-  park_type: string;
+  type: string;
 
   @Column({ type: 'boolean' })
-  grass_trimming: boolean;
+  treatmentGrassTrimming: boolean;
 
   @Column({ type: 'boolean' })
-  tree_pruning: boolean;
+  treatmentTreePruning: boolean;
 
   @Column({ type: 'boolean' })
-  pest_control: boolean;
+  treatmentPestControl: boolean;
 
   @Column('double precision')
-  coordinate_latitude: number;
+  coordinatesLatitude: number;
 
   @Column('double precision')
-  coordinate_longitude: number;
+  coordinatesLongitude: number;
 
   @Column()
-  address_street: string;
+  addressStreet: string;
 
   @Column()
-  address_city: string;
+  addressCity: string;
 
   @Column()
-  garden_img_1: string;
+  gardenImg1: string;
 
   @Column()
-  garden_img_2: string;
+  gardenImg2: string;
 
   @Column()
-  garden_img_3: string;
+  gardenImg3: string;
 
   @Column()
-  garden_img_4: string;
+  gardenImg4: string;
 
   @Column()
-  garden_img_alt: string;
-
+  gardenImgAlt: string;
 
   @OneToOne(() => User, (user) => user.garden)
   @JoinColumn()

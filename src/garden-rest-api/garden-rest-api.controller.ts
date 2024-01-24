@@ -18,17 +18,17 @@ export class GardenRestApiController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.gardenRestApiService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.gardenRestApiService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateGardenRestApiDto: UpdateGardenRestApiDto) {
+  update(@Param('id') id: number, @Body() updateGardenRestApiDto: UpdateGardenRestApiDto) {
     return this.gardenRestApiService.update(+id, updateGardenRestApiDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.gardenRestApiService.remove(+id);
   }
 }
