@@ -22,10 +22,10 @@ export class GardenRestApiService {
   async findAll(): Promise<GardenRestApi[]> {
     return await this.gardenRestApiModel.find().exec();
   }
-
   async findOne(id: number): Promise<GardenRestApi | undefined> {
-    return await this.gardenRestApiModel.findOne({ id }).exec();
+    return this.gardenRestApiModel.findOne({ _id: id }).exec();
   }
+  
 
   async update(id: number, updateGardenRestApiDto: UpdateGardenRestApiDto): Promise<GardenRestApi> {
     const gardenRestApi = await this.gardenRestApiModel.findOneAndUpdate(

@@ -44,6 +44,7 @@
     "ioredis": "^5.3.2",
     "mongoose": "^8.1.0",
     "pg": "^8.11.3",
+    "react-hook-form": "^7.49.3",
     "redis": "^4.6.12",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
